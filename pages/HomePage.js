@@ -18,18 +18,10 @@ class HomePage extends BasePage {
     if (products.length === 0) throw new Error('No products found on home page');
     const firstProduct = products[0];
     await this.driver.executeScript("arguments[0].scrollIntoView({block:'center'});", firstProduct);
-    // Trigger hover via JS events (more reliable in headless than Selenium Actions)
+    // Click the always-visible .productinfo .add-to-cart (no hover needed)
     await this.driver.executeScript(`
-      const el = arguments[0];
-      el.dispatchEvent(new MouseEvent('mouseover', {bubbles: true, cancelable: true}));
-      el.dispatchEvent(new MouseEvent('mouseenter', {bubbles: true, cancelable: true}));
-    `, firstProduct);
-    await this.driver.sleep(800);
-    // Try overlay button first, fallback to any visible add-to-cart
-    await this.driver.executeScript(`
-      const overlay = arguments[0].querySelector('.product-overlay .add-to-cart');
-      const any = document.querySelector('.product-overlay .add-to-cart');
-      const btn = overlay || any;
+      const btn = arguments[0].querySelector('.productinfo .add-to-cart')
+                || arguments[0].querySelector('.add-to-cart');
       if (btn) btn.click();
     `, firstProduct);
     await this.driver.sleep(500);
@@ -37,9 +29,8 @@ class HomePage extends BasePage {
       const continueBtn = await this.wait.untilClickable(HomePage.MODAL_CONTINUE);
       await continueBtn.click();
     } catch {
-      // no modal
+      // no modal shown
     }
-    await this.driver.sleep(1000);
   }
 
   async searchProduct(keyword) {
