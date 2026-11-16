@@ -14,6 +14,7 @@ class RegistrationPage extends BasePage {
   static ACCOUNT_CREATED = By.css("[data-qa='account-created'] b");
 
   async completeRegistration(password = 'Test@1234') {
+    await this._dismissConsent();
     await this.typeText(RegistrationPage.PASSWORD, password);
     await this.typeText(RegistrationPage.FIRST_NAME, 'Test');
     await this.typeText(RegistrationPage.LAST_NAME, 'User');
