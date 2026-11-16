@@ -1,0 +1,19 @@
+{
+  "name": "selenium-js-cucumber",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "cucumber-js",
+    "test:headless": "HEADLESS=true cucumber-js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@cucumber/cucumber": "^13.3.0",
+    "chai": "^6.3.0",
+    "dotenv": "^18.0.10",
+    "selenium-webdriver": "^4.51.0"
+  }
+}
