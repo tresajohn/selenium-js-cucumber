@@ -21,6 +21,10 @@ class BasePage {
 
   async navigate(url) {
     await this.driver.get(url);
+    await this.driver.wait(
+      () => this.driver.executeScript('return document.readyState === "complete"'),
+      10000
+    );
     await this._dismissConsent();
   }
 
