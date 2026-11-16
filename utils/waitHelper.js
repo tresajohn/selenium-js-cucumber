@@ -14,6 +14,7 @@ class WaitHelper {
 
   async untilClickable(locator) {
     const el = await this.driver.wait(until.elementLocated(locator), this.timeout);
+    await this.driver.wait(until.elementIsVisible(el), this.timeout);
     await this.driver.wait(until.elementIsEnabled(el), this.timeout);
     return el;
   }

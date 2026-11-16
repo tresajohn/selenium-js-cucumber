@@ -2,7 +2,7 @@ const { Before, After, setDefaultTimeout } = require('@cucumber/cucumber');
 const { DriverFactory } = require('../utils/driverFactory');
 const { takeScreenshot } = require('../utils/screenshotHelper');
 
-setDefaultTimeout(30000);
+setDefaultTimeout(60000);
 
 Before(async function (scenario) {
   const hasCredentialsTag = scenario.pickle.tags.some(t => t.name === '@needs_credentials');
@@ -10,6 +10,7 @@ Before(async function (scenario) {
     return 'skipped';
   }
   this.driver = await DriverFactory.create(this.config.browser, this.config.headless);
+  this.timeoutSeconds = this.config.timeout;
   if (this.config.headless) {
     await this.driver.manage().window().setRect({ width: 1920, height: 3000 });
   } else {

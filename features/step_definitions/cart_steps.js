@@ -4,7 +4,7 @@ const { HomePage } = require('../../pages/HomePage');
 const { CartPage } = require('../../pages/CartPage');
 
 Given('I am on the home page', async function () {
-  this.homePage = new HomePage(this.driver);
+  this.homePage = new HomePage(this.driver, this.timeoutSeconds);
   await this.homePage.navigateHome(this.config.baseUrl);
 });
 
@@ -13,7 +13,7 @@ When('I add the first visible product to cart', async function () {
 });
 
 When('I navigate to the cart page', async function () {
-  this.cartPage = new CartPage(this.driver);
+  this.cartPage = new CartPage(this.driver, this.timeoutSeconds);
   await this.cartPage.navigate(`${this.config.baseUrl}/view_cart`);
 });
 

@@ -1,4 +1,4 @@
-const { By, until, Key, Actions } = require('selenium-webdriver');
+const { By, until } = require('selenium-webdriver');
 const { WaitHelper } = require('../utils/waitHelper');
 
 const CONSENT_BTN = By.css('.fc-cta-consent');
@@ -76,14 +76,7 @@ class BasePage {
     }
   }
 
-  async hoverAndClick(locator) {
-    const el = await this.wait.untilVisible(locator);
-    await this.driver.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
-    const actions = this.driver.actions({ async: true });
-    await actions.move({ origin: el }).perform();
-    await this.driver.sleep(300);
-    await el.click();
-  }
+
 }
 
 module.exports = { BasePage };

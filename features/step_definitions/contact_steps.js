@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const { ContactPage } = require('../../pages/ContactPage');
 
 Given('I navigate to the contact page', async function () {
-  this.contactPage = new ContactPage(this.driver);
+  this.contactPage = new ContactPage(this.driver, this.timeoutSeconds);
   await this.contactPage.navigate(`${this.config.baseUrl}/contact_us`);
 });
 

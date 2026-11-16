@@ -4,7 +4,7 @@ const { LoginPage } = require('../../pages/LoginPage');
 const { RegistrationPage } = require('../../pages/RegistrationPage');
 
 Given('I navigate to the login page', async function () {
-  this.loginPage = new LoginPage(this.driver);
+  this.loginPage = new LoginPage(this.driver, this.timeoutSeconds);
   await this.loginPage.navigate(`${this.config.baseUrl}/login`);
 });
 
