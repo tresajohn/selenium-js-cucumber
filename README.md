@@ -1,5 +1,7 @@
 # Selenium JS Cucumber BDD
 
+![CI](https://github.com/tresajohn/selenium-js-cucumber/actions/workflows/ci.yml/badge.svg)
+
 End-to-end test suite for [automationexercise.com](https://automationexercise.com) built with **Selenium WebDriver (JavaScript)** and **Cucumber.js** (BDD / Gherkin).
 
 This is one of three portfolio frameworks demonstrating the same test coverage across different languages and tools:
