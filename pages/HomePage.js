@@ -16,20 +16,22 @@ class HomePage extends BasePage {
   async addFirstProductToCart() {
     const products = await this.getElements(HomePage.PRODUCT_ITEMS);
     if (products.length === 0) throw new Error('No products found on home page');
-    await this.driver.executeScript("arguments[0].scrollIntoView({block:'center'});", products[0]);
-    const actions = this.driver.actions({ async: true });
-    await actions.move({ origin: products[0] }).perform();
-    await this.driver.sleep(1000);
-    const addBtns = await this.driver.findElements(HomePage.ADD_TO_CART_BTN);
-    if (addBtns.length === 0) {
-      // Fallback: JS-trigger click on the first overlay button directly
-      await this.driver.executeScript(`
-        const btn = document.querySelector('.product-overlay .add-to-cart');
-        if (btn) btn.click();
-      `);
-    } else {
-      await this.driver.executeScript('arguments[0].click();', addBtns[0]);
-    }
+    const firstProduct = products[0];
+    await this.driver.executeScript("arguments[0].scrollIntoView({block:'center'});", firstProduct);
+    // Trigger hover via JS events (more reliable in headless than Selenium Actions)
+    await this.driver.executeScript(`
+      const el = arguments[0];
+      el.dispatchEvent(new MouseEvent('mouseover', {bubbles: true, cancelable: true}));
+      el.dispatchEvent(new MouseEvent('mouseenter', {bubbles: true, cancelable: true}));
+    `, firstProduct);
+    await this.driver.sleep(800);
+    // Try overlay button first, fallback to any visible add-to-cart
+    await this.driver.executeScript(`
+      const overlay = arguments[0].querySelector('.product-overlay .add-to-cart');
+      const any = document.querySelector('.product-overlay .add-to-cart');
+      const btn = overlay || any;
+      if (btn) btn.click();
+    `, firstProduct);
     await this.driver.sleep(500);
     try {
       const continueBtn = await this.wait.untilClickable(HomePage.MODAL_CONTINUE);
@@ -37,6 +39,7 @@ class HomePage extends BasePage {
     } catch {
       // no modal
     }
+    await this.driver.sleep(1000);
   }
 
   async searchProduct(keyword) {
