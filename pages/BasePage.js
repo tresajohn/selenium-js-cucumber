@@ -10,12 +10,22 @@ class BasePage {
   }
 
   async _dismissConsent() {
+    // pause for async ad scripts, then remove overlay elements via JS
+    await this.driver.sleep(2000);
+    await this.driver.executeScript(`
+      document.querySelectorAll(
+        '.fc-dialog-overlay, .fc-dialog-container, .fc-consent-root'
+      ).forEach(el => el.remove());
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+    `);
+    // also attempt button click as belt-and-suspenders
     try {
-      const consentWait = new WaitHelper(this.driver, 3);
+      const consentWait = new WaitHelper(this.driver, 2);
       const btn = await consentWait.untilClickable(CONSENT_BTN);
       await btn.click();
     } catch {
-      // banner absent or already dismissed
+      // banner absent or already removed
     }
   }
 

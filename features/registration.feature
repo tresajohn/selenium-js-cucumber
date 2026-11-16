@@ -5,7 +5,8 @@ Feature: User Registration
     When I sign up with a unique email and name "Portfolio QA"
     Then I should see the account created confirmation
 
+  @needs_credentials
   Scenario: Register with an already-used email shows error
     Given I navigate to the login page
-    When I sign up with email "wrong@example.com" and name "Any Name"
+    When I sign up with email "valid" and name "Any Name"
     Then I should see the signup error "Email Address already exist!"

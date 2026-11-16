@@ -40,7 +40,8 @@ When('I sign up with a unique email and name {string}', async function (name) {
 });
 
 When('I sign up with email {string} and name {string}', async function (email, name) {
-  await this.loginPage.fillSignup(name, email);
+  const actualEmail = email === 'valid' ? this.config.testEmail : email;
+  await this.loginPage.fillSignup(name, actualEmail);
 });
 
 Then('I should see the account created confirmation', async function () {
