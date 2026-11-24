@@ -1,0 +1,9 @@
+node_modules/
+test-results/
+allure-results/
+allure-report/
+.git/
+.husky/
+.env
+*.zip
+.superpowers/

@@ -1,0 +1,25 @@
+version: '3.8'
+services:
+  selenium-base:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - CI=true
+      - HUSKY=0
+      - BASE_URL=${BASE_URL:-https://www.automationexercise.com}
+      - TEST_EMAIL=${TEST_EMAIL:-}
+      - TEST_PASSWORD=${TEST_PASSWORD:-}
+    volumes:
+      - ./test-results:/app/test-results
+      - ./allure-results:/app/allure-results
+  smoke:
+    extends:
+      service: selenium-base
+    command: npx cucumber-js --profile smoke
+    container_name: selenium-smoke
+  regression:
+    extends:
+      service: selenium-base
+    command: npx cucumber-js --profile regression
+    container_name: selenium-regression
