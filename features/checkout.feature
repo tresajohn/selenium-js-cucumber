@@ -1,6 +1,6 @@
 Feature: Checkout Flow
 
-  @needs_credentials
+  @smoke @needs_credentials
   Scenario: Logged-in user can complete checkout
     Given I am logged in as a registered user
     And I have a product in my cart

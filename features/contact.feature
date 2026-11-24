@@ -1,5 +1,6 @@
 Feature: Contact Form
 
+  @regression
   Scenario: Submit contact form with valid data
     Given I navigate to the contact page
     When I fill in the contact form with valid details
