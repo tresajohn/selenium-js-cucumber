@@ -10,7 +10,7 @@ export class ContactModule {
   }
 
   async navigateToContact(): Promise<void> {
-    this.world.contactPage = new ContactPage(this.world.driver, this.world.timeoutMs);
+    this.world.contactPage = new ContactPage(this.world.driver, this.world.config.timeout);
     await this.world.contactPage.navigate(`${this.world.config.baseUrl}/contact_us`);
   }
 

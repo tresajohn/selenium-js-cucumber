@@ -10,7 +10,7 @@ export class LoginModule {
   }
 
   async navigateToLogin(): Promise<void> {
-    this.world.loginPage = new LoginPage(this.world.driver, this.world.timeoutMs);
+    this.world.loginPage = new LoginPage(this.world.driver, this.world.config.timeout);
     await this.world.loginPage.navigate(`${this.world.config.baseUrl}/login`);
   }
 
