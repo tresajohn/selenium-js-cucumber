@@ -1,16 +1,25 @@
 import {
   Before,
   After,
+  BeforeAll,
   setDefaultTimeout,
   setWorldConstructor,
   ITestCaseHookParameter,
 } from '@cucumber/cucumber';
 import { DriverFactory } from '../utils/driverFactory';
 import { takeScreenshot } from '../utils/screenshotHelper';
+import { JiraHelper, FailureContext } from '../utils/jiraHelper';
+import { getConfig } from '../config/config';
 import { TypedWorld } from './world';
 
 setWorldConstructor(TypedWorld);
 setDefaultTimeout(60000);
+
+let jiraHelper: JiraHelper;
+
+BeforeAll(function () {
+  jiraHelper = new JiraHelper(getConfig());
+});
 
 Before(async function (this: TypedWorld, scenario: ITestCaseHookParameter) {
   const hasCredentialsTag = scenario.pickle.tags.some((t) => t.name === '@needs_credentials');
@@ -28,9 +37,22 @@ Before(async function (this: TypedWorld, scenario: ITestCaseHookParameter) {
 
 After(async function (this: TypedWorld, scenario: ITestCaseHookParameter) {
   if (!this.driver) return;
+  let screenshotPath: string | null = null;
   try {
     if (scenario.result?.status === 'FAILED') {
-      await takeScreenshot(this.driver, scenario.pickle.name);
+      screenshotPath = await takeScreenshot(this.driver, scenario.pickle.name);
+      const tags = scenario.pickle.tags.map((t) => t.name);
+      const failure: FailureContext = {
+        scenarioName: scenario.pickle.name,
+        featureFile: scenario.pickle.uri ?? '',
+        tags,
+        errorMessage: scenario.result.message ?? '',
+        screenshotPath,
+        ciRunUrl: process.env.GITHUB_RUN_URL ?? '',
+        commitSha: process.env.GITHUB_SHA ?? '',
+        durationMs: scenario.result.duration?.nanos ? scenario.result.duration.nanos / 1e6 : 0,
+      };
+      await jiraHelper.createTicket(failure);
     }
     await this.driver.manage().deleteAllCookies();
   } finally {
