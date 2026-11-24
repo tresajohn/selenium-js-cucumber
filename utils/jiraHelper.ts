@@ -146,8 +146,11 @@ export class JiraHelper {
   }
 
   private async _ticketExists(scenarioName: string): Promise<boolean> {
-    const jql = `project = "${this.config.jiraProjectKey}" AND summary = "${scenarioName}" AND statusCategory != Done`;
-    const url = `${this.config.jiraBaseUrl}/rest/api/3/issue/picker?query=${encodeURIComponent(scenarioName)}&currentJQL=${encodeURIComponent(jql)}`;
+    // Use exact-match summary = "..." so a scenario whose name is a substring of another's
+    // does not get a false positive (the ~ operator would cause that).
+    const escaped = scenarioName.replace(/"/g, '\\"');
+    const jql = `project = "${this.config.jiraProjectKey}" AND summary = "[Auto] Selenium failure: ${escaped}" AND statusCategory != Done`;
+    const url = `${this.config.jiraBaseUrl}/rest/api/3/issue/search?jql=${encodeURIComponent(jql)}&maxResults=1&fields=summary`;
     try {
       const res = await fetch(url, {
         headers: {
@@ -156,9 +159,8 @@ export class JiraHelper {
         },
       });
       if (!res.ok) return false;
-      const data = (await res.json()) as { sections: Array<{ issues: unknown[] }> };
-      const issues = data.sections?.flatMap((s) => s.issues) ?? [];
-      return issues.length > 0;
+      const data = (await res.json()) as { total: number };
+      return data.total > 0;
     } catch {
       return false;
     }
