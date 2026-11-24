@@ -15,6 +15,13 @@ export class TypedWorld extends World {
   contactPage?: import('../pages/ContactPage').ContactPage;
   regPage?: import('../pages/RegistrationPage').RegistrationPage;
 
+  // per-scenario module refs
+  loginModule?: import('../modules/LoginModule').LoginModule;
+  cartModule?: import('../modules/CartModule').CartModule;
+  checkoutModule?: import('../modules/CheckoutModule').CheckoutModule;
+  searchModule?: import('../modules/SearchModule').SearchModule;
+  contactModule?: import('../modules/ContactModule').ContactModule;
+
   constructor(options: IWorldOptions) {
     super(options);
     this.config = getConfig();
