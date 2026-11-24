@@ -1,7 +1,8 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { WebDriver } from 'selenium-webdriver';
 
-async function takeScreenshot(driver, scenarioName) {
+export async function takeScreenshot(driver: WebDriver, scenarioName: string): Promise<string> {
   const dir = path.join(process.cwd(), 'screenshots');
   if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
@@ -13,5 +14,3 @@ async function takeScreenshot(driver, scenarioName) {
   fs.writeFileSync(filepath, data, 'base64');
   return filepath;
 }
-
-module.exports = { takeScreenshot };

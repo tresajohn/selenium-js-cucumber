@@ -1,16 +1,16 @@
-const { By, until } = require('selenium-webdriver');
-const { WaitHelper } = require('../utils/waitHelper');
+import { By, WebDriver, WebElement } from 'selenium-webdriver';
+import { WaitHelper } from '../utils/waitHelper';
 
-const CONSENT_BTN = By.css('.fc-cta-consent');
+export class BasePage {
+  protected driver: WebDriver;
+  protected wait: WaitHelper;
 
-class BasePage {
-  constructor(driver, timeoutSeconds = 10) {
+  constructor(driver: WebDriver, timeoutSeconds = 10) {
     this.driver = driver;
     this.wait = new WaitHelper(driver, timeoutSeconds);
   }
 
-  async _dismissConsent() {
-    // pause for async ad scripts, then remove overlay elements via JS
+  protected async _dismissConsent(): Promise<void> {
     await this.driver.sleep(2000);
     await this.driver.executeScript(`
       document.querySelectorAll(
@@ -19,26 +19,26 @@ class BasePage {
       document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
     `);
-    // also attempt button click as belt-and-suspenders
     try {
       const consentWait = new WaitHelper(this.driver, 2);
-      const btn = await consentWait.untilClickable(CONSENT_BTN);
+      const btn = await consentWait.untilClickable(By.css('.fc-cta-consent'));
       await btn.click();
     } catch {
       // banner absent or already removed
     }
   }
 
-  async navigate(url) {
+  async navigate(url: string): Promise<void> {
     await this.driver.get(url);
     await this.driver.wait(
-      () => this.driver.executeScript('return document.readyState === "complete"'),
+      () =>
+        this.driver.executeScript('return document.readyState === "complete"') as Promise<boolean>,
       10000
     );
     await this._dismissConsent();
   }
 
-  async click(locator) {
+  async click(locator: By): Promise<void> {
     const el = await this.wait.untilClickable(locator);
     await this.driver.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
     try {
@@ -48,7 +48,7 @@ class BasePage {
     }
   }
 
-  async typeText(locator, text) {
+  async typeText(locator: By, text: string): Promise<void> {
     const el = await this.wait.untilClickable(locator);
     await this.driver.executeScript("arguments[0].scrollIntoView({block:'center'});", el);
     await el.clear();
@@ -59,12 +59,12 @@ class BasePage {
     }
   }
 
-  async getText(locator) {
+  async getText(locator: By): Promise<string> {
     const el = await this.wait.untilVisible(locator);
     return el.getText();
   }
 
-  async isVisible(locator) {
+  async isVisible(locator: By): Promise<boolean> {
     try {
       await this.wait.untilVisible(locator);
       return true;
@@ -73,11 +73,11 @@ class BasePage {
     }
   }
 
-  async getTitle() {
+  async getTitle(): Promise<string> {
     return this.driver.getTitle();
   }
 
-  async getElements(locator) {
+  async getElements(locator: By): Promise<WebElement[]> {
     try {
       await this.wait.untilVisible(locator);
       return this.driver.findElements(locator);
@@ -85,8 +85,4 @@ class BasePage {
       return [];
     }
   }
-
-
 }
-
-module.exports = { BasePage };
