@@ -2,8 +2,14 @@ module.exports = {
   default: {
     requireModule: ['tsx/cjs'],
     require: ['support/**/*.ts', 'features/step_definitions/**/*.ts'],
-    format: ['progress-bar', 'html:reports/cucumber-report.html', 'allure-cucumberjs/reporter'],
+    format: [
+      'progress-bar',
+      'html:reports/cucumber-report.html',
+      'allure-cucumberjs/reporter',
+      './utils/flakyFormatter.ts',
+    ],
     formatOptions: { snippetInterface: 'async-await' },
+    retry: 1,
     publish: false,
   },
   smoke: {

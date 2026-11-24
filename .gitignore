@@ -1,6 +1,10 @@
 node_modules/
+dist/
 reports/
 screenshots/
+test-results/
+allure-results/
+allure-report/
 .env
 logs/
 .superpowers/
