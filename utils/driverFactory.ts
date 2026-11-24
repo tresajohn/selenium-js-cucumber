@@ -49,6 +49,8 @@ export class DriverFactory {
     const b = browser.toLowerCase();
     if (b === 'chrome') {
       const options = new chrome.Options();
+      options.addArguments('--disable-blink-features=AutomationControlled');
+      options.excludeSwitches('enable-automation');
       if (headless) {
         options.addArguments(
           '--headless=new',
