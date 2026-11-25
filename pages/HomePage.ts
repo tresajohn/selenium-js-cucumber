@@ -46,7 +46,18 @@ export class HomePage extends BasePage {
 
   async searchProduct(keyword: string): Promise<void> {
     const origin = (await this.driver.executeScript('return window.location.origin')) as string;
-    await this.navigate(`${origin}/products?search_product=${encodeURIComponent(keyword)}`);
+    await this.navigate(`${origin}/products`);
+    const inp = await this.wait.untilClickable(this.searchInput);
+    await inp.clear();
+    await inp.sendKeys(keyword);
+    // executeScript click returns immediately (no WebDriver navigation-block like el.click())
+    await this.driver.executeScript("document.getElementById('submit_search').click()");
+    await this.driver.wait(
+      () =>
+        this.driver.executeScript('return document.readyState === "complete"') as Promise<boolean>,
+      30000
+    );
+    await this._dismissConsent();
   }
 
   async getProductNames(): Promise<string[]> {
