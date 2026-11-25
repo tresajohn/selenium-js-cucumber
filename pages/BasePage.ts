@@ -33,7 +33,7 @@ export class BasePage {
     await this.driver.wait(
       () =>
         this.driver.executeScript('return document.readyState === "complete"') as Promise<boolean>,
-      30000
+      10000
     );
     await this._dismissConsent();
   }

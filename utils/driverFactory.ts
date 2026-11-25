@@ -51,7 +51,6 @@ export class DriverFactory {
       const options = new chrome.Options();
       options.addArguments('--disable-blink-features=AutomationControlled');
       options.excludeSwitches('enable-automation');
-      options.setPageLoadStrategy('none');
       if (headless) {
         options.addArguments(
           '--headless=new',

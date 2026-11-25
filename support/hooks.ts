@@ -27,6 +27,10 @@ Before(async function (this: TypedWorld, scenario: ITestCaseHookParameter) {
     return 'skipped';
   }
   this.driver = await DriverFactory.create(this.config.browser, this.config.headless);
+  // Cap page load at 30s so driver.get() fails fast when the site is queued/unavailable
+  await (
+    this.driver.manage() as unknown as { setTimeouts: (t: object) => Promise<void> }
+  ).setTimeouts({ pageLoad: 30000 });
   this.timeoutMs = this.config.timeout * 1000;
   if (this.config.headless) {
     await this.driver.manage().window().setRect({ width: 1920, height: 3000 });
