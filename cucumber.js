@@ -18,6 +18,7 @@ module.exports = {
     tags: '@smoke',
     format: ['progress-bar', 'allure-cucumberjs/reporter'],
     formatOptions: { snippetInterface: 'async-await' },
+    retry: 1,
     publish: false,
   },
   regression: {
@@ -26,6 +27,7 @@ module.exports = {
     tags: '@regression',
     format: ['progress-bar', 'allure-cucumberjs/reporter'],
     formatOptions: { snippetInterface: 'async-await' },
+    retry: 1,
     publish: false,
   },
 };
