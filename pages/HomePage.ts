@@ -45,13 +45,8 @@ export class HomePage extends BasePage {
   }
 
   async searchProduct(keyword: string): Promise<void> {
-    const currentUrl = await this.driver.getCurrentUrl();
-    if (!currentUrl.includes('/products')) {
-      const origin = (await this.driver.executeScript('return window.location.origin')) as string;
-      await this.navigate(`${origin}/products`);
-    }
-    await this.typeText(this.searchInput, keyword);
-    await this.click(this.searchButton);
+    const origin = (await this.driver.executeScript('return window.location.origin')) as string;
+    await this.navigate(`${origin}/products?search_product=${encodeURIComponent(keyword)}`);
   }
 
   async getProductNames(): Promise<string[]> {
