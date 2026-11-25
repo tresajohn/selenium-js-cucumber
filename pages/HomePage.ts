@@ -61,11 +61,23 @@ export class HomePage extends BasePage {
   }
 
   async getProductNames(): Promise<string[]> {
-    const els = await this.getElements(this.productNames);
-    const names: string[] = [];
-    for (const el of els) {
-      names.push(await el.getText());
-    }
-    return names;
+    // Use in-page JS to filter out notification popups that clone product card HTML
+    // but sit inside a position:fixed ancestor — CSS selectors cannot distinguish them
+    return (await this.driver.executeScript(`
+      function hasFixedAncestor(el) {
+        let node = el.parentElement;
+        while (node && node !== document.documentElement) {
+          if (window.getComputedStyle(node).position === 'fixed') return true;
+          node = node.parentElement;
+        }
+        return false;
+      }
+      const container = document.querySelector('.features_items');
+      if (!container) return [];
+      return Array.from(container.querySelectorAll('.product-image-wrapper .productinfo p'))
+        .filter(el => !hasFixedAncestor(el))
+        .map(el => el.textContent.trim())
+        .filter(Boolean);
+    `)) as string[];
   }
 }
