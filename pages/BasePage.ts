@@ -35,6 +35,12 @@ export class BasePage {
         this.driver.executeScript('return document.readyState === "complete"') as Promise<boolean>,
       10000
     );
+    const bodyText = (await this.driver.executeScript(
+      'return document.body ? document.body.innerText : ""'
+    )) as string;
+    if (bodyText.includes('heavy load')) {
+      throw new Error(`Site under heavy load — navigate failed: ${url}`);
+    }
     await this._dismissConsent();
   }
 
