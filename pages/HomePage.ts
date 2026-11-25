@@ -52,11 +52,6 @@ export class HomePage extends BasePage {
     }
     await this.typeText(this.searchInput, keyword);
     await this.click(this.searchButton);
-    try {
-      await this.wait.untilVisible(this.productNames);
-    } catch {
-      // no results is valid
-    }
   }
 
   async getProductNames(): Promise<string[]> {

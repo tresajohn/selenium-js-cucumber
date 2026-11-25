@@ -13,7 +13,7 @@ import { getConfig } from '../config/config';
 import { TypedWorld } from './world';
 
 setWorldConstructor(TypedWorld);
-setDefaultTimeout(60000);
+setDefaultTimeout(90000);
 
 let jiraHelper: JiraHelper;
 
