@@ -15,7 +15,7 @@ export class HomePage extends BasePage {
     return By.css('#submit_search');
   }
   get productNames(): By {
-    return By.css('.productinfo p');
+    return By.css('.features_items .productinfo p');
   }
 
   async navigateHome(baseUrl: string): Promise<void> {
